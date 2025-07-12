@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .models import Course , Subject
-from .serializers import CourseSerializer , SubjectSerializer ,CustomTokenObtainPairSerializer
+from .models import Course , Module
+from .serializers import CourseSerializer , ModuleSerializer ,CustomTokenObtainPairSerializer
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -9,17 +9,29 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
-
-
-class SubjectViewset(viewsets.ModelViewSet):
-    queryset = Subject.objects.all()
-    serializer_class = SubjectSerializer
-    permission_classes = [IsAuthenticated]
-
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.generics import ListAPIView
 class CourseViewset(viewsets.ModelViewSet):
-    queryset = Course.objects.all()
+    queryset = Course.objects.all().select_related('owner')
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticated]
+
+    
+
+
+class ModuleViewset(viewsets.ModelViewSet):
+    queryset = Module.objects.all() 
+    serializer_class = ModuleSerializer
+    permission_classes = [IsAuthenticated]  
+
+class CourseModuleAPIView(ListAPIView):
+    serializer_class = ModuleSerializer
+    
+    def get_queryset(self):
+        cours_id = self.kwargs['pk']
+        return Module.objects.filter(course_id=cours_id)
+        
+
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):

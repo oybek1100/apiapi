@@ -1,13 +1,13 @@
 from django.contrib import admin
-from .models import Course , Subject
+from .models import Course , Module
 
-class SubjectAdmin(admin.ModelAdmin):
-    list_display = ('title' , 'slug' , 'image')
-    prepopulated_fields = {'slug':('title',)}
+class ModuleAdmin(admin.ModelAdmin):
+    list_display = ('title' , 'course')
+    
 
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('title' , 'owner',   'subject' ,'image')
+    list_display = ('title' , 'owner', 'image')
 
 admin.site.register(Course , CourseAdmin)
-admin.site.register(Subject , SubjectAdmin)
-# Register your models here.
+admin.site.register(Module , ModuleAdmin)
+
